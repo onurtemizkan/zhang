@@ -4,6 +4,7 @@ from steps.intrinsics import get_camera_intrinsics
 from steps.extrinsics import get_camera_extrinsics
 from steps.distortion import estimate_lens_distortion
 
+
 def calibrate():
     data = parse_data()
 
