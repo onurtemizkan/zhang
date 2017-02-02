@@ -1,18 +1,29 @@
-from steps.Parser import parse_data
-from steps.DLT import compute_homography
-from steps.Intrinsics import get_camera_intrinsics
-from steps.Extrinsics import get_camera_extrinsics
-
+from steps.parser import parse_data
+from steps.dlt import compute_homography
+from steps.intrinsics import get_camera_intrinsics
+from steps.extrinsics import get_camera_extrinsics
+from steps.distortion import estimate_lens_distortion
 
 def calibrate():
-    homographies = compute_homography(parse_data())
+    data = parse_data()
+
+    homographies = compute_homography(data)
 
     intrinsics = get_camera_intrinsics(homographies)
 
-    print "intrinsics"
-    print intrinsics
+    # print "intrinsics"
+    # print intrinsics
 
-    get_camera_extrinsics(intrinsics, homographies)
+    extrinsics = get_camera_extrinsics(intrinsics, homographies)
+
+    # print "extrinsics"
+    # print extrinsics
+
+    distortion = estimate_lens_distortion(intrinsics, extrinsics, data["real"], data["sensed"])
+
+    # print "distortion"
+    # print distortion
+
     return
 
 calibrate()
