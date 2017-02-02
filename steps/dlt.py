@@ -41,25 +41,28 @@ def estimate_homography(sensed, real):
         ])
 
         # prime is " ' " like a'
-        first_prime = np.apply_along_axis(
+        # first prime
+        pr_1 = np.apply_along_axis(
             unhomogeneous,
             1,
             np.dot(first_normalisation_matrix, homogeneous_first)[0]
         )[0]
 
-        second_prime = np.apply_along_axis(
+        # second prime
+        pr_2 = np.apply_along_axis(
             unhomogeneous,
             1,
             np.dot(second_normalisation_matrix, homogeneous_second)[0]
         )[0]
 
         M = np.append(M, np.array([
-            first_prime[0], first_prime[1], 1, 0, 0,
-            0, -first_prime[0]*second_prime[0], -first_prime[1]*second_prime[0], -second_prime[0]
+            pr_1[0], pr_1[1], 1,
+            0, 0, 0,
+            -pr_1[0]*pr_2[0], -pr_1[1]*pr_2[0], -pr_2[0]
         ]), axis=0)
         M = np.append(M, np.array([
-            0, 0, 0, first_prime[0], first_prime[1],
-            1, -first_prime[0]*second_prime[1], -first_prime[1]*second_prime[1], -second_prime[1]
+            0, 0, 0, pr_1[0], pr_1[1],
+            1, -pr_1[0]*pr_2[1], -pr_1[1]*pr_2[1], -pr_2[1]
         ]), axis=0)
 
     # U, S, V = np.linalg.svd()

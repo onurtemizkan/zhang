@@ -20,7 +20,12 @@ def calibrate():
     # print "extrinsics"
     # print extrinsics
 
-    distortion = estimate_lens_distortion(intrinsics, extrinsics, data["real"], data["sensed"])
+    distortion = estimate_lens_distortion(
+        intrinsics,
+        extrinsics,
+        data["real"],
+        data["sensed"]
+    )
 
     # print "distortion"
     # print distortion

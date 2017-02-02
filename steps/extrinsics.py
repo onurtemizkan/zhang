@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def estimate_view_transform(intrinsics, homography):
     homography = homography.reshape(3, 3)
     inv_intrinsics = np.linalg.inv(intrinsics)
@@ -22,6 +23,7 @@ def estimate_view_transform(intrinsics, homography):
 
     # todo: Add minimization
     return Rt
+
 
 def get_camera_extrinsics(intrinsics, homographies):
     extrinsics = []
