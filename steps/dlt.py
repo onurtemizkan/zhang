@@ -18,25 +18,27 @@ def get_normalisation_matrix(flattened_corners):
 
 
 def unhomogeneous(x):
+
     return np.array([x[0], x[1]])
 
 
-def estimate_homography(sensed, real):
+def estimate_homography(first, second):
 
-    first_normalisation_matrix = get_normalisation_matrix(sensed)
-    second_normalisation_matrix = get_normalisation_matrix(real)  # note: can be moved out
+    first_normalisation_matrix = get_normalisation_matrix(first)
+    # note: can be moved out
+    second_normalisation_matrix = get_normalisation_matrix(second)
 
     M = np.array([])
-    for j in range(0, sensed.size / 2):
+    for j in range(0, first.size / 2):
         homogeneous_first = np.array([
-            sensed[0][j],
-            sensed[1][j],
+            first[0][j],
+            first[1][j],
             1
         ])
 
         homogeneous_second = np.array([
-            real[0][j],
-            real[1][j],
+            second[0][j],
+            second[1][j],
             1
         ])
 
@@ -108,6 +110,7 @@ def cost(homography, points):
 
 
 def jac(homography, points):
+
     J = []
 
     for i in range(0, points.size / 2):
@@ -138,17 +141,19 @@ def jac(homography, points):
 
 
 def refine_homography(homography, sensed):
+
     return opt.root(cost, homography, jac=jac, args=sensed, method='lm').x
 
 
 def compute_homography(data):
+
     real = data['real'].reshape((2, 256))
 
     refined_homographies = []
 
     for i in range(0, len(data['sensed'])):
         sensed = data['sensed'][i].reshape((2, 256))
-        estimated = estimate_homography(sensed, real)
+        estimated = estimate_homography(real, sensed)
         refined = refine_homography(estimated, sensed)
         refined = refined / refined[-1]
         refined_homographies.append(refined)

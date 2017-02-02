@@ -2,6 +2,7 @@ import numpy as np
 
 
 def v(p, q, H):
+
     return np.array([
         H[0, p] * H[0, q],
         H[0, p] * H[1, q] + H[1, p] * H[0, q],

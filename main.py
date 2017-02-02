@@ -10,15 +10,18 @@ def calibrate():
 
     homographies = compute_homography(data)
 
+    print "homographies"
+    print homographies
+
     intrinsics = get_camera_intrinsics(homographies)
 
-    # print "intrinsics"
-    # print intrinsics
+    print "intrinsics"
+    print intrinsics
 
     extrinsics = get_camera_extrinsics(intrinsics, homographies)
 
-    # print "extrinsics"
-    # print extrinsics
+    print "extrinsics"
+    print extrinsics
 
     distortion = estimate_lens_distortion(
         intrinsics,
@@ -26,9 +29,6 @@ def calibrate():
         data["real"],
         data["sensed"]
     )
-
-    # print "distortion"
-    # print distortion
 
     return
 
