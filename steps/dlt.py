@@ -54,10 +54,12 @@ def estimate_homography(sensed, real):
         )[0]
 
         M = np.append(M, np.array([
-            first_prime[0], first_prime[1], 1, 0, 0, 0, -first_prime[0]*second_prime[0], -first_prime[1]*second_prime[0], -second_prime[0]
+            first_prime[0], first_prime[1], 1, 0, 0,
+            0, -first_prime[0]*second_prime[0], -first_prime[1]*second_prime[0], -second_prime[0]
         ]), axis=0)
         M = np.append(M, np.array([
-            0, 0, 0, first_prime[0], first_prime[1], 1, -first_prime[0]*second_prime[1], -first_prime[1]*second_prime[1], -second_prime[1]
+            0, 0, 0, first_prime[0], first_prime[1],
+            1, -first_prime[0]*second_prime[1], -first_prime[1]*second_prime[1], -second_prime[1]
         ]), axis=0)
 
     # U, S, V = np.linalg.svd()
