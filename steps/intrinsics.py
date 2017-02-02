@@ -38,14 +38,16 @@ def get_camera_intrinsics(homographies):
     ])
 
     tmpX = B[0, 1] * B[0, 2] - B[0, 0] * B[1, 2]
-    v0 = tmpX / (B[0, 0] * B[1, 1] - B[0, 1] * B[0, 1])
+    tmpY = B[0, 0] * B[1, 1] - B[0, 1] * B[0, 1]
+
+    v0 = tmpX / tmpY
     ld = B[2, 2] - (B[0, 2] * B[0, 2] + v0 * tmpX) / B[0, 0]
 
     if ld < 0:
         ld = 0.001
 
     alpha = np.sqrt(ld / B[0, 0])
-    beta = np.sqrt(ld * B[0, 0] / (B[0, 0] * B[1, 1] - B[0, 1] * B[0, 1]))
+    beta = np.sqrt(ld * B[0, 0] / tmpY)
     gamma = -B[0, 1] * alpha * alpha * beta / ld
     u0 = gamma * v0 / beta - B[0, 2] * alpha * alpha / ld
 
