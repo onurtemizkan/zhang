@@ -147,12 +147,12 @@ def refine_homography(homography, sensed):
 
 def compute_homography(data):
 
-    real = data['real'].reshape((2, 256))
+    real = data['real']
 
     refined_homographies = []
 
     for i in range(0, len(data['sensed'])):
-        sensed = data['sensed'][i].reshape((2, 256))
+        sensed = data['sensed'][i]
         estimated = estimate_homography(real, sensed)
         refined = refine_homography(estimated, sensed)
         refined = refined / refined[-1]
