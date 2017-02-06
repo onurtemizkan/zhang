@@ -17,18 +17,18 @@ def get_normalisation_matrix(flattened_corners):
     ])
 
 
-def unhomogeneous(x):
-
-    return np.array([x[0], x[1]])
-
-
 def estimate_homography(first, second):
 
     first_normalisation_matrix = get_normalisation_matrix(first)
     # note: can be moved out
     second_normalisation_matrix = get_normalisation_matrix(second)
 
-    M = np.array([])
+    print "NORM MATRICES"
+    print first_normalisation_matrix
+    print second_normalisation_matrix
+
+    M = []
+
     for j in range(0, first.size / 2):
         homogeneous_first = np.array([
             first[0][j],
@@ -44,31 +44,25 @@ def estimate_homography(first, second):
 
         # prime is " ' " like a'
         # first prime
-        pr_1 = np.apply_along_axis(
-            unhomogeneous,
-            1,
-            np.dot(first_normalisation_matrix, homogeneous_first)[0]
-        )[0]
+        pr_1 = np.dot(first_normalisation_matrix, homogeneous_first)
 
         # second prime
-        pr_2 = np.apply_along_axis(
-            unhomogeneous,
-            1,
-            np.dot(second_normalisation_matrix, homogeneous_second)[0]
-        )[0]
+        pr_2 = np.dot(second_normalisation_matrix, homogeneous_second)
 
-        M = np.append(M, np.array([
-            pr_1[0], pr_1[1], 1,
+
+        M.append(np.array([
+            pr_1.item(0), pr_1.item(1), 1,
             0, 0, 0,
-            -pr_1[0]*pr_2[0], -pr_1[1]*pr_2[0], -pr_2[0]
-        ]), axis=0)
-        M = np.append(M, np.array([
-            0, 0, 0, pr_1[0], pr_1[1],
-            1, -pr_1[0]*pr_2[1], -pr_1[1]*pr_2[1], -pr_2[1]
-        ]), axis=0)
+            -pr_1.item(0)*pr_2.item(0), -pr_1.item(1)*pr_2.item(0), -pr_2.item(0)
+        ]))
+
+        M.append(np.array([
+            0, 0, 0, pr_1.item(0), pr_1.item(1),
+            1, -pr_1.item(0)*pr_2.item(1), -pr_1.item(1)*pr_2.item(1), -pr_2.item(1)
+        ]))
 
     # U, S, V = np.linalg.svd()
-    U, S, Vh = np.linalg.svd(M.reshape((512, 9)))
+    U, S, Vh = np.linalg.svd(np.array(M).reshape((512, 9)))
 
     L = Vh[-1]
 
