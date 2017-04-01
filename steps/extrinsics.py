@@ -14,15 +14,17 @@ def estimate_view_transform(intrinsics, homography):
     ld2 = 1 / np.linalg.norm(np.dot(inv_intrinsics, h2))
     ld3 = (ld1 + ld2) / 2
 
-    r1 = ld1 * np.dot(inv_intrinsics, h1)
-    r2 = ld2 * np.dot(inv_intrinsics, h2)
-    r3 = np.cross(r1, r2)
+    r0 = ld1 * np.dot(inv_intrinsics, h1)
+    r1 = ld2 * np.dot(inv_intrinsics, h2)
+    r2 = np.cross(r0, r1)
 
     t = np.array(ld3 * np.dot(inv_intrinsics, h3)).transpose()
 
-    Rt = np.array([r1.transpose(), r2.transpose(), r3.transpose(), t.transpose()]).transpose()
+    Rt = np.array(
+            [r0.transpose(), r1.transpose(), r2.transpose(), t.transpose()]
+         ).transpose()
 
-    # todo: Add minimization
+    # todo: Add optimization?
     return Rt
 
 
