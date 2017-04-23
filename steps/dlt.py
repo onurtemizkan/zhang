@@ -4,8 +4,8 @@ from scipy import optimize as opt
 
 def get_normalisation_matrix(flattened_corners):
 
-    avg_x = flattened_corners[0].mean()
-    avg_y = flattened_corners[1].mean()
+    avg_x = flattened_corners[:, 0].mean()
+    avg_y = flattened_corners[:, 1].mean()
 
     s_x = np.sqrt(2 / flattened_corners[0].std())
     s_y = np.sqrt(2 / flattened_corners[1].std())
@@ -26,14 +26,14 @@ def estimate_homography(first, second):
 
     for j in range(0, first.size / 2):
         homogeneous_first = np.array([
-            first[0][j],
-            first[1][j],
+            first[j][0],
+            first[j][1],
             1
         ])
 
         homogeneous_second = np.array([
-            second[0][j],
-            second[1][j],
+            second[j][0],
+            second[j][1],
             1
         ])
 
@@ -60,22 +60,23 @@ def estimate_homography(first, second):
 
     denormalised = np.dot(
         np.dot(
-            np.linalg.inv(second_normalisation_matrix),
+            np.linalg.inv(first_normalisation_matrix),
             H
         ),
-        first_normalisation_matrix
+        second_normalisation_matrix
     )
 
-    return denormalised
+    return denormalised / denormalised[-1, -1]
 
 
-def cost(homography, points):
+def cost(homography, data):
+    [sensed, real] = data
 
     Y = []
 
-    for i in range(0, points.size / 2):
-        x = points[0][i]
-        y = points[1][i]
+    for i in range(0, sensed.size / 2):
+        x = sensed[i][0]
+        y = sensed[i][1]
 
         w = homography[6] * x + homography[7] * y + homography[8]
 
@@ -93,13 +94,14 @@ def cost(homography, points):
     return np.array(Y)
 
 
-def jac(homography, points):
+def jac(homography, data):
+    [sensed, real] = data
 
     J = []
 
-    for i in range(0, points.size / 2):
-        x = points[0][i]
-        y = points[1][i]
+    for i in range(0, sensed.size / 2):
+        x = sensed[i][0]
+        y = sensed[i][1]
 
         s_x = homography[0] * x + homography[1] * y + homography[2]
         s_y = homography[3] * x + homography[4] * y + homography[5]
@@ -124,10 +126,15 @@ def jac(homography, points):
     return np.array(J)
 
 
-def refine_homography(homography, sensed):
-    X = sensed.zip(sensed)
+def refine_homography(homography, sensed, real):
 
-    return opt.root(cost, homography, jac=jac, args=sensed, method='lm').x
+    return opt.root(
+        cost,
+        homography,
+        jac=jac,
+        args=[sensed, real],
+        method='lm'
+    )
 
 
 def compute_homography(data):
@@ -139,8 +146,8 @@ def compute_homography(data):
     for i in range(0, len(data['sensed'])):
         sensed = data['sensed'][i]
         estimated = estimate_homography(real, sensed)
-        refined = refine_homography(estimated, sensed)
-        refined = refined / refined[-1]
-        refined_homographies.append(refined)
+        # refined = refine_homography(estimated, sensed, real)
+        # refined = refined / refined[-1, -1]
+        refined_homographies.append(estimated)
 
     return np.array(refined_homographies)

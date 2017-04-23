@@ -32,28 +32,22 @@ def get_camera_intrinsics(homographies):
         np.zeros(h_count * 2),
     )[-1]
 
-    B = np.array([
-        [b[0], b[1], b[3]],
-        [b[1], b[2], b[4]],
-        [b[3], b[4], b[5]]
-    ])
+    w = b[0] * b[2] * b[5] - b[1]**2 * b[5] - b[0] * b[4]**2 + 2 * b[1] * b[3] * b[4] - b[2] * b[3]**2
+    d = b[0] * b[2] - b[1]**2
 
-    tmpX = B[0, 1] * B[0, 2] - B[0, 0] * B[1, 2]
-    tmpY = B[0, 0] * B[1, 1] - B[0, 1] * B[0, 1]
+    # if (d < 0):
+    #     d = 0.01
+    d = -d
 
-    v0 = tmpX / tmpY
-    ld = B[2, 2] - (B[0, 2] * B[0, 2] + v0 * tmpX) / B[0, 0]
-
-    if ld < 0:
-        ld = 0.001
-
-    alpha = np.sqrt(ld / B[0, 0])
-    beta = np.sqrt(ld * B[0, 0] / tmpY)
-    gamma = -B[0, 1] * alpha * alpha * beta / ld
-    u0 = gamma * v0 / beta - B[0, 2] * alpha * alpha / ld
+    #
+    alpha = np.sqrt(w / (d * b[0]))
+    beta = np.sqrt(w / d**2 * b[0])
+    gamma = np.sqrt(w / (d**2 * b[0])) * b[1]
+    uc = (b[1] * b[4] - b[2] * b[3]) / d
+    vc = (b[1] * b[3] - b[0] * b[4]) / d
 
     return np.array([
-        [alpha, gamma, u0],
-        [0,     beta,  v0],
+        [alpha, gamma, uc],
+        [0,     beta,  vc],
         [0,     0,      1]
     ])
