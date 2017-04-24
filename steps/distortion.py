@@ -14,7 +14,7 @@ def estimate_lens_distortion(intrinsics, extrinsics, model, sensor):
     for i in range(0, len(extrinsics)):
         for j in range(0, model.size/2):
 
-            homog_model_coords = np.array([model[0][j], model[1][j], 0, 1])
+            homog_model_coords = np.array([model[j][0], model[j][1], 0, 1])
             homog_coords = np.dot(extrinsics[i], homog_model_coords)
 
             coords = homog_coords / homog_coords[-1]
@@ -42,8 +42,8 @@ def estimate_lens_distortion(intrinsics, extrinsics, model, sensor):
                 ])
             )
 
-            up = sensor[i][0][j]
-            vp = sensor[i][1][j]
+            up = sensor[i][j][0]
+            vp = sensor[i][j][1]
 
             d.append(up - u)
             d.append(vp - v)
