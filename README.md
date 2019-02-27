@@ -7,10 +7,10 @@ This repository contains the implementation of
 
 ### Requirements
 
-- `python 2.7`
 - `numpy`
 - `scipy`
 - `pipenv`
+- `pylint`
 
 ### Running
 

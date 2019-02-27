@@ -7,7 +7,7 @@ def timer():
 
     def end(method_name="Unnamed function"):
 
-        print method_name + " took : " + str(time.time() - start) + " seconds."
+        print(method_name + " took : " + str(time.time() - start) + " seconds.")
         return
 
     return end

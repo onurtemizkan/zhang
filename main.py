@@ -12,22 +12,22 @@ def calibrate():
     end = timer()
     homographies = compute_homography(data)
     end("Homography Estimation")
-    print "homographies"
-    print homographies
+    print("homographies")
+    print(homographies)
 
     end = timer()
     intrinsics = get_camera_intrinsics(homographies)
     end("Intrinsics")
 
-    print "intrinsics"
-    print intrinsics
+    print("intrinsics")
+    print(intrinsics)
 
     end = timer()
     extrinsics = get_camera_extrinsics(intrinsics, homographies)
     end("Extrinsics")
 
-    print "extrinsics"
-    print extrinsics
+    print("extrinsics")
+    print(extrinsics)
 
     end = timer()
     distortion = estimate_lens_distortion(
