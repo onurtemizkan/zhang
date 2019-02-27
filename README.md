@@ -7,12 +7,14 @@ This repository contains the implementation of
 
 ### Requirements
 
-- `python (version = ">=1.0, <3.0)`
+- `python 2.7`
 - `numpy`
 - `scipy`
+- `pipenv`
 
 ### Running
 
 - Clone this repository
-- Make sure that the dependencies are installed
+- Install dependencies: `pipenv install`
+- Run a shell inside virtual environment: `pipenv shell`
 - Run `main.py`
